@@ -260,7 +260,7 @@ function generateWigglyPath(options = {}) {
  *
  * @param {Object} options
  * @param {string} [options.backgroundColor="#FFF8EA"]
- * @param {string} [options.borderColor="#F4E3C1"]
+ * @param {string} [options.borderColor="#815A0E"]
  * @param {number} [options.borderWidth=4]
  * @param {number} [options.waveAmplitude=4]
  * @param {number} [options.waveSegmentSize=25]
@@ -271,7 +271,7 @@ function generateWigglyPath(options = {}) {
 function generateSvgString(options = {}) {
   const {
     backgroundColor = "#FFF8EA",
-    borderColor = "#F4E3C1",
+    borderColor = "#815A0E",
     borderWidth = 4,
     waveAmplitude = 4,
     waveSegmentSize = 25,
@@ -311,7 +311,7 @@ function generateSvgString(options = {}) {
  *
  * @param {Object} options
  * @param {string} [options.backgroundColor="#FFF8EA"]
- * @param {string} [options.borderColor="#F4E3C1"]
+ * @param {string} [options.borderColor="#815A0E"]
  * @param {number} [options.borderWidth=4]
  * @param {number} [options.waveAmplitude=4]
  * @param {number} [options.waveSegmentSize=25]
@@ -322,7 +322,7 @@ function generateSvgString(options = {}) {
 function generateReactComponent(options = {}) {
   const {
     backgroundColor = "#FFF8EA",
-    borderColor = "#F4E3C1",
+    borderColor = "#815A0E",
     borderWidth = 4,
     waveAmplitude = 4,
     waveSegmentSize = 25,

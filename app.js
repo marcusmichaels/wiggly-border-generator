@@ -51,7 +51,7 @@
 
   const state = {
     backgroundColor: "#FFF8EA",
-    borderColor: "#F4E3C1",
+    borderColor: "#815A0E",
     textColor: "#4A3F1F",
     borderWidth: 4,
     waveAmplitude: 4,
