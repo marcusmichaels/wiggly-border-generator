@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wiggly Border Generator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Wiggly Border Generator</h1>
+        <p class="description">
+          This generator creates organic, hand-drawn style borders using a single continuous SVG path. The path is built by generating
+          points along each edge with varying wave offsets, then connecting them with smooth Catmull-Rom curves converted to Bezier curves.
+          The result scales naturally with any container size while keeping the border stroke consistent using
+          <code>vector-effect="non-scaling-stroke"</code>.
+        </p>
+      </header>
+
+      <main>
+        <section class="preview-section">
+          <div class="preview-box" id="preview-box">
+            <svg
+              id="wiggly-svg"
+              class="wiggly-svg"
+              viewBox="0 0 400 300"
+              preserveAspectRatio="none"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path id="fill-path" />
+              <path id="stroke-path" vector-effect="non-scaling-stroke" />
+            </svg>
+            <div class="preview-content" contenteditable="true">
+              <h2>Your Content Here</h2>
+              <p>The wiggly border scales with the container while keeping the content crisp.</p>
+              <p>P.S. You can edit this text directly!</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="controls-section">
+          <!-- Background Color -->
+          <div class="control-group">
+            <label for="backgroundColor">Background Color</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="backgroundColor" value="#FFF8EA" />
+              <input type="text" id="backgroundColorText" value="#FFF8EA" class="color-text" />
+            </div>
+          </div>
+
+          <!-- Border Color -->
+          <div class="control-group">
+            <label for="borderColor">Border Color</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="borderColor" value="#F4E3C1" />
+              <input type="text" id="borderColorText" value="#F4E3C1" class="color-text" />
+            </div>
+          </div>
+
+          <!-- Text Color -->
+          <div class="control-group">
+            <label for="textColor">Text Color</label>
+            <div class="color-input-wrapper">
+              <input type="color" id="textColor" value="#4A3F1F" />
+              <input type="text" id="textColorText" value="#4A3F1F" class="color-text" />
+            </div>
+          </div>
+
+          <!-- Border Width -->
+          <div class="control-group">
+            <label for="borderWidth"> Border Width: <span id="borderWidthValue">4</span>px </label>
+            <input type="range" id="borderWidth" min="1" max="8" step="1" value="4" />
+          </div>
+
+          <!-- Wave Amplitude -->
+          <div class="control-group">
+            <label for="waveAmplitude"> Wave Amplitude: <span id="waveAmplitudeValue">4</span> </label>
+            <input type="range" id="waveAmplitude" min="1" max="12" step="1" value="4" />
+          </div>
+
+          <!-- Wave Segment Size -->
+          <div class="control-group">
+            <label for="waveSegmentSize"> Wave Segment Size: <span id="waveSegmentSizeValue">25</span> </label>
+            <input type="range" id="waveSegmentSize" min="5" max="50" step="5" value="25" />
+          </div>
+
+          <!-- Box Width -->
+          <div class="control-group">
+            <label for="boxWidth"> Box Width: <span id="boxWidthValue">400</span>px </label>
+            <input type="range" id="boxWidth" min="100" max="600" step="10" value="400" />
+          </div>
+
+          <!-- Box Height -->
+          <div class="control-group">
+            <label for="boxHeight"> Box Height: <span id="boxHeightValue">250</span>px </label>
+            <input type="range" id="boxHeight" min="50" max="500" step="10" value="250" />
+          </div>
+
+          <!-- Export Section -->
+          <details class="export-details">
+            <summary>Export</summary>
+            <div class="export-content">
+              <div class="export-buttons">
+                <button type="button" id="exportSvg" class="export-btn">SVG</button>
+                <button type="button" id="exportReact" class="export-btn">React</button>
+                <button type="button" id="copyCode" class="export-btn" style="display: none">Copy</button>
+              </div>
+              <pre><code id="exportCode"></code></pre>
+            </div>
+          </details>
+        </section>
+      </main>
+    </div>
+
+    <script src="wiggly-border.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
