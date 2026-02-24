@@ -47,6 +47,26 @@
         </section>
 
         <section class="controls-section">
+          <!-- Content-based sizing toggle -->
+          <div class="control-group">
+            <label class="toggle-label">
+              <input type="checkbox" id="contentBasedSizing" />
+              <span>Fix box to content</span>
+            </label>
+          </div>
+
+          <!-- ViewBox Width -->
+          <div class="control-group" id="boxWidthGroup">
+            <label for="boxWidth"> ViewBox Width: <span id="boxWidthValue">400</span> </label>
+            <input type="range" id="boxWidth" min="100" max="600" step="10" value="400" />
+          </div>
+
+          <!-- ViewBox Height -->
+          <div class="control-group" id="boxHeightGroup">
+            <label for="boxHeight"> ViewBox Height: <span id="boxHeightValue">250</span> </label>
+            <input type="range" id="boxHeight" min="50" max="500" step="10" value="250" />
+          </div>
+
           <!-- Background Color -->
           <div class="control-group">
             <label for="backgroundColor">Background Color</label>
@@ -90,18 +110,6 @@
           <div class="control-group">
             <label for="waveSegmentSize"> Wave Segment Size: <span id="waveSegmentSizeValue">25</span> </label>
             <input type="range" id="waveSegmentSize" min="5" max="50" step="5" value="25" />
-          </div>
-
-          <!-- Box Width -->
-          <div class="control-group">
-            <label for="boxWidth"> Box Width: <span id="boxWidthValue">400</span>px </label>
-            <input type="range" id="boxWidth" min="100" max="600" step="10" value="400" />
-          </div>
-
-          <!-- Box Height -->
-          <div class="control-group">
-            <label for="boxHeight"> Box Height: <span id="boxHeightValue">250</span>px </label>
-            <input type="range" id="boxHeight" min="50" max="500" step="10" value="250" />
           </div>
 
           <!-- Export Section -->

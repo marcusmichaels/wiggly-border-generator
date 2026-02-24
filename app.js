@@ -37,6 +37,11 @@
     boxWidthValue: document.getElementById("boxWidthValue"),
     boxHeight: document.getElementById("boxHeight"),
     boxHeightValue: document.getElementById("boxHeightValue"),
+    boxWidthGroup: document.getElementById("boxWidthGroup"),
+    boxHeightGroup: document.getElementById("boxHeightGroup"),
+
+    // Content-based sizing toggle
+    contentBasedSizing: document.getElementById("contentBasedSizing"),
 
     // Export
     exportSvg: document.getElementById("exportSvg"),
@@ -58,6 +63,7 @@
     waveSegmentSize: 25,
     boxWidth: 400,
     boxHeight: 250,
+    contentBasedSizing: false,
   };
 
   // ---------------------------------------------------------
@@ -92,9 +98,16 @@
     elements.strokePath.setAttribute("stroke-linejoin", "round");
     elements.strokePath.setAttribute("fill", "none");
 
-    // Update preview box dimensions
-    elements.previewBox.style.width = `${state.boxWidth}px`;
-    elements.previewBox.style.height = `${state.boxHeight}px`;
+    // Update preview box dimensions based on sizing mode
+    if (state.contentBasedSizing) {
+      elements.previewBox.style.width = "";
+      elements.previewBox.style.height = "";
+      elements.previewBox.classList.add("content-based");
+    } else {
+      elements.previewBox.style.width = `${state.boxWidth}px`;
+      elements.previewBox.style.height = `${state.boxHeight}px`;
+      elements.previewBox.classList.remove("content-based");
+    }
 
     // Update text color
     elements.previewContent.style.color = state.textColor;
@@ -150,6 +163,14 @@
       valueDisplay.textContent = value;
       updatePreview();
     });
+  }
+
+  /**
+   * Toggle between fixed dimensions and content-based sizing.
+   */
+  function toggleContentBasedSizing(enabled) {
+    state.contentBasedSizing = enabled;
+    updatePreview();
   }
 
   // ---------------------------------------------------------
@@ -226,6 +247,11 @@
     setupRangeInput(elements.waveSegmentSize, elements.waveSegmentSizeValue, "waveSegmentSize");
     setupRangeInput(elements.boxWidth, elements.boxWidthValue, "boxWidth");
     setupRangeInput(elements.boxHeight, elements.boxHeightValue, "boxHeight");
+
+    // Set up content-based sizing toggle
+    elements.contentBasedSizing.addEventListener("change", (e) => {
+      toggleContentBasedSizing(e.target.checked);
+    });
 
     // Set up export buttons
     elements.exportSvg.addEventListener("click", exportSvg);
