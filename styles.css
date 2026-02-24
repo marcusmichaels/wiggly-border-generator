@@ -110,6 +110,7 @@ header .description code {
 
 .control-group input[type="range"] {
   width: 100%;
+  -webkit-appearance: none;
   appearance: none;
   height: 4px;
   border-radius: 4px;
@@ -118,6 +119,7 @@ header .description code {
 }
 
 .control-group input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
   appearance: none;
   width: 16px;
   height: 16px;
@@ -185,6 +187,7 @@ label.toggle-label {
 }
 
 .toggle-label input[type="checkbox"] {
+  -webkit-appearance: none;
   appearance: none;
   flex-shrink: 0;
   width: 16px;
@@ -198,7 +201,7 @@ label.toggle-label {
 .toggle-label input[type="checkbox"]:checked::after {
   content: "";
   position: absolute;
-  inset: 3px;
+  inset: 2px;
   background-color: #000;
 }
 
