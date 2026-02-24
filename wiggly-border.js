@@ -4,15 +4,15 @@
  * Generates organic, hand-drawn style SVG borders that scale with their container.
  *
  * Strategy:
- * 1. Define a viewBox coordinate system (400x300) that the SVG will scale to fit
- * 2. Generate points along each edge with organic wave offsets
- * 3. Connect points using Catmull-Rom to Bezier curve conversion for smooth lines
- * 4. Output as a single continuous closed path
+ * 1. Use a dynamic viewBox that matches the aspect ratio of the target dimensions
+ * 2. Calculate segment counts based on actual edge lengths for uniform wave density
+ * 3. Generate points along each edge with organic wave offsets
+ * 4. Connect points using Catmull-Rom to Bezier curve conversion for smooth lines
+ * 5. Output as a single continuous closed path
  */
 
-// Constants for the SVG viewBox dimensions
-const VIEW_BOX_WIDTH = 400;
-const VIEW_BOX_HEIGHT = 300;
+// Base unit for viewBox calculations - we scale from this
+const BASE_VIEWBOX_SIZE = 400;
 
 // Each edge gets a unique seed for consistent but varied wave patterns
 const EDGE_SEEDS = {
@@ -115,29 +115,84 @@ function generateSmoothPath(points) {
 }
 
 /**
+ * Calculate viewBox dimensions that match the target aspect ratio.
+ *
+ * @param {number} targetWidth - Actual display width in pixels
+ * @param {number} targetHeight - Actual display height in pixels
+ * @returns {{width: number, height: number}} ViewBox dimensions
+ */
+function calculateViewBox(targetWidth, targetHeight) {
+  const aspectRatio = targetWidth / targetHeight;
+
+  if (aspectRatio >= 1) {
+    // Wider than tall
+    return {
+      width: BASE_VIEWBOX_SIZE * aspectRatio,
+      height: BASE_VIEWBOX_SIZE,
+    };
+  } else {
+    // Taller than wide
+    return {
+      width: BASE_VIEWBOX_SIZE,
+      height: BASE_VIEWBOX_SIZE / aspectRatio,
+    };
+  }
+}
+
+/**
+ * Calculate uniform segment counts based on edge lengths.
+ * This ensures consistent wave density regardless of aspect ratio.
+ *
+ * @param {number} horizontalLength - Length of horizontal edges
+ * @param {number} verticalLength - Length of vertical edges
+ * @param {number} waveSegmentSize - Target size for each wave segment
+ * @returns {{horizontal: number, vertical: number}} Segment counts
+ */
+function calculateSegments(horizontalLength, verticalLength, waveSegmentSize) {
+  // Calculate segments proportionally to edge length
+  const horizontalSegments = Math.max(4, Math.round(horizontalLength / waveSegmentSize));
+  const verticalSegments = Math.max(4, Math.round(verticalLength / waveSegmentSize));
+
+  return {
+    horizontal: horizontalSegments,
+    vertical: verticalSegments,
+  };
+}
+
+/**
  * Generate the complete wiggly border path data.
  *
  * @param {Object} options
  * @param {number} [options.waveAmplitude=4] - How far waves extend from the edge
  * @param {number} [options.waveSegmentSize=25] - Distance between wave points
  * @param {number} [options.borderWidth=4] - Stroke width (affects inset)
- * @returns {string} Complete SVG path data for the border
+ * @param {number} [options.targetWidth=400] - Actual display width in pixels
+ * @param {number} [options.targetHeight=300] - Actual display height in pixels
+ * @returns {{pathData: string, viewBoxWidth: number, viewBoxHeight: number}} Path data and viewBox dimensions
  */
 function generateWigglyPath(options = {}) {
-  const { waveAmplitude = 4, waveSegmentSize = 25, borderWidth = 4 } = options;
+  const { waveAmplitude = 4, waveSegmentSize = 25, borderWidth = 4, targetWidth = 400, targetHeight = 300 } = options;
+
+  // Calculate viewBox dimensions to match aspect ratio
+  const viewBox = calculateViewBox(targetWidth, targetHeight);
+  const viewBoxWidth = viewBox.width;
+  const viewBoxHeight = viewBox.height;
 
   // Inset the path so waves don't get clipped at viewBox edges
   const padding = waveAmplitude + borderWidth;
 
-  // Calculate how many wave segments fit along each edge
-  const horizontalSegments = Math.max(6, Math.floor(VIEW_BOX_WIDTH / waveSegmentSize));
-  const verticalSegments = Math.max(4, Math.floor(VIEW_BOX_HEIGHT / waveSegmentSize));
-
   // Define the rectangle bounds (inset from viewBox edges)
   const left = padding;
-  const right = VIEW_BOX_WIDTH - padding;
+  const right = viewBoxWidth - padding;
   const top = padding;
-  const bottom = VIEW_BOX_HEIGHT - padding;
+  const bottom = viewBoxHeight - padding;
+
+  // Calculate actual edge lengths in viewBox units
+  const horizontalLength = right - left;
+  const verticalLength = bottom - top;
+
+  // Calculate segment counts based on edge lengths for uniform density
+  const segments = calculateSegments(horizontalLength, verticalLength, waveSegmentSize);
 
   // Generate points for each edge, going clockwise from top-left
   // The perpDirection vector points outward from the box
@@ -147,7 +202,7 @@ function generateWigglyPath(options = {}) {
     top,
     right,
     top,
-    horizontalSegments,
+    segments.horizontal,
     waveAmplitude,
     EDGE_SEEDS.top,
     { x: 0, y: -1 }, // Waves go up
@@ -158,7 +213,7 @@ function generateWigglyPath(options = {}) {
     top,
     right,
     bottom,
-    verticalSegments,
+    segments.vertical,
     waveAmplitude,
     EDGE_SEEDS.right,
     { x: 1, y: 0 }, // Waves go right
@@ -169,7 +224,7 @@ function generateWigglyPath(options = {}) {
     bottom,
     left,
     bottom,
-    horizontalSegments,
+    segments.horizontal,
     waveAmplitude,
     EDGE_SEEDS.bottom,
     { x: 0, y: 1 }, // Waves go down
@@ -180,7 +235,7 @@ function generateWigglyPath(options = {}) {
     bottom,
     left,
     top,
-    verticalSegments,
+    segments.vertical,
     waveAmplitude,
     EDGE_SEEDS.left,
     { x: -1, y: 0 }, // Waves go left
@@ -191,7 +246,13 @@ function generateWigglyPath(options = {}) {
   const allPoints = [...topPoints, ...rightPoints.slice(1), ...bottomPoints.slice(1), ...leftPoints.slice(1, -1)];
 
   // Generate smooth path and close it
-  return `${generateSmoothPath(allPoints)} Z`;
+  const pathData = `${generateSmoothPath(allPoints)} Z`;
+
+  return {
+    pathData,
+    viewBoxWidth,
+    viewBoxHeight,
+  };
 }
 
 /**
@@ -203,15 +264,31 @@ function generateWigglyPath(options = {}) {
  * @param {number} [options.borderWidth=4]
  * @param {number} [options.waveAmplitude=4]
  * @param {number} [options.waveSegmentSize=25]
+ * @param {number} [options.targetWidth=400]
+ * @param {number} [options.targetHeight=300]
  * @returns {string} Complete SVG markup
  */
 function generateSvgString(options = {}) {
-  const { backgroundColor = "#FFF8EA", borderColor = "#F4E3C1", borderWidth = 4, waveAmplitude = 4, waveSegmentSize = 25 } = options;
+  const {
+    backgroundColor = "#FFF8EA",
+    borderColor = "#F4E3C1",
+    borderWidth = 4,
+    waveAmplitude = 4,
+    waveSegmentSize = 25,
+    targetWidth = 400,
+    targetHeight = 300,
+  } = options;
 
-  const pathData = generateWigglyPath({ waveAmplitude, waveSegmentSize, borderWidth });
+  const { pathData, viewBoxWidth, viewBoxHeight } = generateWigglyPath({
+    waveAmplitude,
+    waveSegmentSize,
+    borderWidth,
+    targetWidth,
+    targetHeight,
+  });
 
   return `<svg
-  viewBox="0 0 ${VIEW_BOX_WIDTH} ${VIEW_BOX_HEIGHT}"
+  viewBox="0 0 ${viewBoxWidth} ${viewBoxHeight}"
   preserveAspectRatio="none"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
@@ -238,12 +315,28 @@ function generateSvgString(options = {}) {
  * @param {number} [options.borderWidth=4]
  * @param {number} [options.waveAmplitude=4]
  * @param {number} [options.waveSegmentSize=25]
+ * @param {number} [options.targetWidth=400]
+ * @param {number} [options.targetHeight=300]
  * @returns {string} React component code
  */
 function generateReactComponent(options = {}) {
-  const { backgroundColor = "#FFF8EA", borderColor = "#F4E3C1", borderWidth = 4, waveAmplitude = 4, waveSegmentSize = 25 } = options;
+  const {
+    backgroundColor = "#FFF8EA",
+    borderColor = "#F4E3C1",
+    borderWidth = 4,
+    waveAmplitude = 4,
+    waveSegmentSize = 25,
+    targetWidth = 400,
+    targetHeight = 300,
+  } = options;
 
-  const pathData = generateWigglyPath({ waveAmplitude, waveSegmentSize, borderWidth });
+  const { pathData, viewBoxWidth, viewBoxHeight } = generateWigglyPath({
+    waveAmplitude,
+    waveSegmentSize,
+    borderWidth,
+    targetWidth,
+    targetHeight,
+  });
 
   return `import type { ReactNode } from "react";
 
@@ -262,7 +355,7 @@ export const BoxWithWigglyBorder = ({
     <div className={\`relative \${className}\`}>
       <svg
         className="absolute inset-0 w-full h-full overflow-visible"
-        viewBox="0 0 ${VIEW_BOX_WIDTH} ${VIEW_BOX_HEIGHT}"
+        viewBox="0 0 ${viewBoxWidth} ${viewBoxHeight}"
         preserveAspectRatio="none"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -293,6 +386,5 @@ window.WigglyBorder = {
   generateWigglyPath,
   generateSvgString,
   generateReactComponent,
-  VIEW_BOX_WIDTH,
-  VIEW_BOX_HEIGHT,
+  calculateViewBox,
 };

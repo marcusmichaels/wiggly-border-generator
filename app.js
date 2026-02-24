@@ -14,6 +14,7 @@
     // Preview
     previewBox: document.getElementById("preview-box"),
     previewContent: document.querySelector(".preview-content"),
+    wigglySvg: document.getElementById("wiggly-svg"),
     fillPath: document.getElementById("fill-path"),
     strokePath: document.getElementById("stroke-path"),
 
@@ -68,11 +69,16 @@
    * Called whenever any control value changes.
    */
   function updatePreview() {
-    const pathData = WigglyBorder.generateWigglyPath({
+    const { pathData, viewBoxWidth, viewBoxHeight } = WigglyBorder.generateWigglyPath({
       waveAmplitude: state.waveAmplitude,
       waveSegmentSize: state.waveSegmentSize,
       borderWidth: state.borderWidth,
+      targetWidth: state.boxWidth,
+      targetHeight: state.boxHeight,
     });
+
+    // Update the SVG viewBox to match the dynamic dimensions
+    elements.wigglySvg.setAttribute("viewBox", `0 0 ${viewBoxWidth} ${viewBoxHeight}`);
 
     // Update the fill (background) path
     elements.fillPath.setAttribute("d", pathData);
@@ -160,6 +166,8 @@
       borderWidth: state.borderWidth,
       waveAmplitude: state.waveAmplitude,
       waveSegmentSize: state.waveSegmentSize,
+      targetWidth: state.boxWidth,
+      targetHeight: state.boxHeight,
     });
 
     elements.exportCode.textContent = svg;
@@ -176,6 +184,8 @@
       borderWidth: state.borderWidth,
       waveAmplitude: state.waveAmplitude,
       waveSegmentSize: state.waveSegmentSize,
+      targetWidth: state.boxWidth,
+      targetHeight: state.boxHeight,
     });
 
     elements.exportCode.textContent = component;
