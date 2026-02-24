@@ -29,14 +29,15 @@ Open `index.html` in a browser. No build step or server required.
 
 ### Controls
 
-| Control | Description |
-|---------|-------------|
-| Background Color | Fill color inside the border |
-| Border Color | Stroke color of the wiggly line |
-| Border Width | Thickness of the stroke (1–8px) |
-| Wave Amplitude | How far waves extend from the edge |
+| Control           | Description                                         |
+| ----------------- | --------------------------------------------------- |
+| Background Color  | Fill color inside the border                        |
+| Border Color      | Stroke color of the wiggly line                     |
+| Text Color        | Color of the text content                           |
+| Border Width      | Thickness of the stroke (1–8px)                     |
+| Wave Amplitude    | How far waves extend from the edge                  |
 | Wave Segment Size | Distance between wave points (smaller = more waves) |
-| Box Width/Height | Preview container size |
+| Box Width/Height  | Preview container size                              |
 
 ### Export
 
@@ -54,9 +55,7 @@ Drop the SVG into your HTML and style the container:
 ```html
 <div style="position: relative; width: 300px; height: 200px;">
   <!-- paste SVG here -->
-  <div style="position: relative; padding: 32px 20px; text-align: center;">
-    Your content here
-  </div>
+  <div style="position: relative; padding: 32px 20px; text-align: center;">Your content here</div>
 </div>
 ```
 
@@ -70,7 +69,7 @@ import { BoxWithWigglyBorder } from "./BoxWithWigglyBorder";
 <BoxWithWigglyBorder>
   <h2>Title</h2>
   <p>Content goes here</p>
-</BoxWithWigglyBorder>
+</BoxWithWigglyBorder>;
 ```
 
 ## Browser Support
@@ -82,10 +81,11 @@ Works in all modern browsers. The only feature with limited support is `vector-e
 Edit the constants in `wiggly-border.js`:
 
 ```js
-const VIEW_BOX_WIDTH = 400;   // viewBox width
-const VIEW_BOX_HEIGHT = 300;  // viewBox height
+const VIEW_BOX_WIDTH = 400; // viewBox width
+const VIEW_BOX_HEIGHT = 300; // viewBox height
 
-const EDGE_SEEDS = {          // Change for different wave patterns
+const EDGE_SEEDS = {
+  // Change for different wave patterns
   top: 1.23,
   right: 4.56,
   bottom: 7.89,
@@ -96,8 +96,5 @@ const EDGE_SEEDS = {          // Change for different wave patterns
 The `getOrganicOffset` function controls wave variation. Adjust the multipliers and weights to change how organic the waves feel:
 
 ```js
-const variation =
-  Math.sin(index * 1.7 + seed) * 0.3 +
-  Math.sin(index * 2.3 + seed * 1.5) * 0.2 +
-  Math.sin(index * 0.9 + seed * 0.7) * 0.25;
+const variation = Math.sin(index * 1.7 + seed) * 0.3 + Math.sin(index * 2.3 + seed * 1.5) * 0.2 + Math.sin(index * 0.9 + seed * 0.7) * 0.25;
 ```

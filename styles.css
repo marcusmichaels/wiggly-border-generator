@@ -209,3 +209,17 @@ header .description code {
   color: #fff;
   white-space: pre;
 }
+
+footer {
+  text-align: right;
+  font-family: monospace;
+  width: 100%;
+  border-top: 1px solid #f1f1f1;
+  margin-top: 40px;
+  font-size: 0.6rem;
+  padding: 1rem;
+}
+
+footer a {
+  color: #000;
+}
